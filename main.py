@@ -1,1 +1,45 @@
-hello world 
+import asyncio
+import os
+import sys
+import threading
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+
+import websockets
+
+from server.game import GameServer
+class ClientHandler(SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=os.path.join(os.path.dirname(__file__), "client"), **kwargs)
+
+    def log_message(self, format, *args):
+        pass
+
+
+def start_http_server(host: str = "127.0.0.1", port: int = 8080):
+    server = ThreadingHTTPServer((host, port), ClientHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    print(f"[HTTP] Client served at http://{host}:{port}/")
+    return server
+
+
+async def start_websocket_server(host: str = "127.0.0.1", port: int = 8765):
+    game = GameServer()
+    stop = asyncio.Future()
+
+    async with websockets.serve(game.handle_client, host, port):
+        print(f" Websocket: Game server listening on ws://{host}:{port}/")
+        print("Open browser@ http://{}:{}/".format(host, 8080))
+        await stop
+
+def main():
+    start_http_server()
+    try:
+        asyncio.run(start_websocket_server())
+    except KeyboardInterrupt:
+        print("\nShutting down...")
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

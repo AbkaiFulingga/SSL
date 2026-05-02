@@ -1,7 +1,15 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Dict, List
 
 import yaml
+
+
+@dataclass
+class Item:
+    id: str
+    name: str
+    description: str
+    takeable: bool = True
 
 
 @dataclass
@@ -10,31 +18,52 @@ class Room:
     title: str
     description: str
     exits: Dict[str, str] = field(default_factory=dict)
-    items: List[str] = field(default_factory=list)
+    items: List[Item] = field(default_factory=list)
     npcs: List[str] = field(default_factory=list)
 
 
-def load_rooms(path: str) -> Dict[str, Room]:
+def load_items(path: str) -> Dict[str, Item]:
+    with open(path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+
+    items: Dict[str, Item] = {}
+    for item_data in data.get("items", []):
+        item = Item(
+            id=item_data["id"],
+            name=item_data["name"],
+            description=item_data["description"],
+            takeable=item_data.get("takeable", True),
+        )
+        items[item.id] = item
+    return items
+
+
+def load_rooms(path: str, items: Dict[str, Item]) -> Dict[str, Room]:
     with open(path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
 
     rooms: Dict[str, Room] = {}
     for room_id, fields in data.items():
+        room_items = []
+        for item_id in fields.get("items", []):
+            if item_id in items:
+                room_items.append(replace(items[item_id]))
+
         rooms[room_id] = Room(
             id=fields["id"],
             title=fields["title"],
             description=fields["description"],
             exits=fields.get("exits", {}),
-            items=fields.get("items", []),
+            items=room_items,
             npcs=fields.get("npcs", []),
         )
     return rooms
 
 
 class World:
-    """This is to hold the room graph and to provide navigation function"""
     def __init__(self):
-        self.rooms: Dict[str, Room] = load_rooms("server/data/rooms.yaml")
+        items = load_items("server/data/items.yaml")
+        self.rooms: Dict[str, Room] = load_rooms("server/data/rooms.yaml", items)
 
     def get_room(self, room_id: str) -> Room | None:
         return self.rooms.get(room_id)
@@ -50,6 +79,10 @@ class World:
             "",
             "Exits:",
         ]
+        if room.items:
+            lines.append("You see here: " + ", ".join(item.name for item in room.items))
+            lines.append("")
+        lines.append("Exits:")
         if room.exits:
             for direction, dest_id in room.exits.items():
                 dest = self.get_room(dest_id)

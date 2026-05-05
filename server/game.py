@@ -4,6 +4,11 @@ from typing import Dict, List
 
 from .world import World, load_items, load_rooms, Item, Room
 from .parser import parse, Command
+from .time_system import GameTime, EventScheduler, time_str
+from .npc import get_dialogue
+
+
+FACTIONS = ["resistance", "kempeitai", "green_gang", "french_concession", "british", "civilian"]
 
 
 def _find_item_by_name(name: str, items: List[Item]) -> Item | None:
@@ -17,12 +22,22 @@ def _find_item_by_name(name: str, items: List[Item]) -> Item | None:
     return None
 
 
+def _find_npc_by_name(name: str, npc_ids: List[str], npcs: Dict[str, any]) -> str | None:
+    name = name.lower().strip()
+    for npc_id in npc_ids:
+        npc = npcs.get(npc_id)
+        if npc and name in npc.name.lower():
+            return npc_id
+    return None
+
+
 class PlayerSession:
     def __init__(self, websocket):
         self.websocket = websocket
         self.location = "bund_dawn"
         self.inventory: List[Item] = []
         self.running = True
+        self.trust = {f: 50 for f in FACTIONS}
 
     async def send(self, text: str):
         await self.websocket.send(json.dumps({"type": "display", "payload": text}))
@@ -34,7 +49,39 @@ class PlayerSession:
 class GameServer:
     def __init__(self):
         self.world = World()
+        self.game_time = GameTime()
+        self.scheduler = EventScheduler()
+        self.scheduler.load_from_yaml("server/data/events.yaml")
         self.sessions: Dict[str, PlayerSession] = {}
+
+    def _broadcast(self, text: str):
+        for session in list(self.sessions.values()):
+            asyncio.create_task(session.send(text + "\n"))
+
+    def _move_npcs_if_hour_changed(self):
+        current_hour = self.game_time.minute // 60
+        if self.game_time.minute % 60 != 0:
+            return
+        for npc_id, npc in self.world.npcs.items():
+            if current_hour in npc.schedule:
+                new_room_id = npc.schedule[current_hour]
+                old_room_id = self.world.npc_locations.get(npc_id)
+                if old_room_id != new_room_id:
+                    if old_room_id and old_room_id in self.world.rooms:
+                        if npc_id in self.world.rooms[old_room_id].npcs:
+                            self.world.rooms[old_room_id].npcs.remove(npc_id)
+                    self.world.rooms[new_room_id].npcs.append(npc_id)
+                    self.world.npc_locations[npc_id] = new_room_id
+
+    async def tick_loop(self):
+        while True:
+            await asyncio.sleep(1)
+            self.game_time.minute += 1
+            if self.game_time.minute >= 1440:
+                self.game_time.minute = 0
+                self.game_time.day += 1
+            self.scheduler.process(self.game_time, self._broadcast)
+            self._move_npcs_if_hour_changed()
 
     async def handle_client(self, websocket):
         session = PlayerSession(websocket)
@@ -44,6 +91,7 @@ class GameServer:
         await self._send_welcome(session)
         await self._cmd_look(session, Command(verb="look", raw="look"))
         await session.send_prompt()
+
         try:
             async for message in websocket:
                 text = message.strip()
@@ -132,6 +180,42 @@ class GameServer:
             text += f"  {item.name}\n"
         await session.send(text)
 
+    async def _cmd_wait(self, session: PlayerSession, cmd: Command):
+        minutes_str = cmd.direct_obj
+        if not minutes_str:
+            await session.send("Wait how long?\n")
+            return
+
+        try:
+            minutes = int(minutes_str)
+        except ValueError:
+            await session.send("You must wait a number of minutes.\n")
+            return
+
+        for _ in range(minutes):
+            self.game_time.minute += 1
+            if self.game_time.minute >= 1440:
+                self.game_time.minute = 0
+                self.game_time.day += 1
+            self.scheduler.process(self.game_time, self._broadcast)
+            self._move_npcs_if_hour_changed()
+
+        await session.send(f"You wait {minutes} minutes. It is now {time_str(self.game_time)}.\n")
+
+    async def _cmd_talk_to(self, session: PlayerSession, cmd: Command):
+        npc_name = cmd.direct_obj
+        if not npc_name:
+            await session.send("Talk to whom?\n")
+            return
+        room = self.world.get_room(session.location)
+        npc_id = _find_npc_by_name(npc_name, room.npcs, self.world.npcs)
+        if not npc_id:
+            await session.send("They aren't here.\n")
+            return
+        npc = self.world.npcs[npc_id]
+        line = get_dialogue(npc, session.trust)
+        await session.send(f'{npc.name} says, "{line}"\n')
+
     async def _cmd_quit(self, session: PlayerSession, cmd: Command):
         await session.send("Goodbye.\n")
         session.running = False
@@ -145,15 +229,14 @@ class GameServer:
             "  TAKE <item>    - Pick up an item\n"
             "  DROP <item>    - Drop an item\n"
             "  INVENTORY (I)  - Check your belongings\n"
+            "  WAIT <minutes> - Pass time\n"
+            "  TALK TO <npc>  - Speak with someone\n"
             "  HELP           - Show this message\n"
             "  QUIT           - Leave the game\n"
             "\n"
             "You can also type a direction alone, e.g. 'north' or 'n'.\n"
         )
         await session.send(help_text)
-
-    async def _cmd_talk_to(self, session: PlayerSession, cmd: Command):
-        await session.send("Talking has not been implemented.\n")
 
     async def _cmd_give(self, session: PlayerSession, cmd: Command):
         await session.send("Giving has not been implemented.\n")
@@ -180,9 +263,6 @@ class GameServer:
         await session.send("Reading has not been implemented yet.\n")
 
     async def _cmd_use(self, session: PlayerSession, cmd: Command):
-        await session.send("Using items has not been implemented yet.\n")
-
-    async def _cmd_wait(self, session: PlayerSession, cmd: Command):
         await session.send("Using items has not been implemented yet.\n")
 
     async def _cmd_sleep(self, session: PlayerSession, cmd: Command):

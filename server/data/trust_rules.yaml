@@ -1,0 +1,24 @@
+rules:
+  - action: "talk_to_resistance"
+    deltas:
+      resistance: 10
+      kempeitai: -5
+    visible: true
+
+  - action: "talk_to_kempeitai"
+    deltas:
+      kempeitai: 8
+      resistance: -10
+      civilian: -3
+    visible: true
+
+  - action: "out_after_curfew"
+    deltas:
+      civilian: -10
+      resistance: -2
+    visible: true
+
+  - action: "carry_weapon"
+    deltas:
+      civilian: -10
+    visible: true

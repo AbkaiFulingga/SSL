@@ -33,6 +33,7 @@ VERB_ALIASES = {
     "bye": "quit",
     "h": "help",
     "?": "help",
+    "stat": "status",
 }
 
 KNOWN_VERBS = {
@@ -56,6 +57,7 @@ KNOWN_VERBS = {
     "wait",
     "sleep",
     "journal",
+    "status",
 }
 
 
@@ -101,6 +103,11 @@ def parse(text: str) -> Command:
         rest = _strip_articles(tokens[2:])
         direct = " ".join(rest) if rest else None
         return Command(verb="ask about", direct_obj=direct, raw=raw)
+
+    if first == "whisper" and len(tokens) > 2:
+        direct = tokens[1]
+        indirect = " ".join(tokens[2:])
+        return Command(verb="whisper", direct_obj=direct, indirect_obj=indirect, raw=raw)
 
     verb = _resolve_verb(first)
     rest = tokens[1:]

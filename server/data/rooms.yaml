@@ -1,18 +1,152 @@
-bund_dawn:
-  id: bund_dawn
-  title: "The Bund, Dawn"
-  description: "A grey mist hangs over the Huangpu River. Japanese warships sit motionless, their flags limp in the humid air. The promenade is nearly empty, save for a few rickshaw pullers huddled by the railing."
-  exits:
-    west: nanking_road
-  items:
-    - ration_card
-    - brass_key
-  indoors: false
+districts:
+  - prefix: bund
+    room_prefix: bund
+    title_prefix: "Bund Promenade"
+    count: 25
+    tags: [bund, river, checkpoint]
+    indoors_every: 5
+    item_cycle: [ration_card, photograph, newspaper, brass_key]
+    description_templates:
+      - "River mist drifts around bollards and broken reflections while clerks hurry by with their collars turned up."
+      - "The embankment smells of coal smoke and wet rope, and every footstep seems to carry farther than it should."
+      - "Across the water, cranes and gunmetal hulls hold the dawn in a hard, metallic silence."
+      - "Foreign stone facades glow weakly through the haze, pretending the century has not been split open."
+      - "Rickshaw wheels hiss over damp paving while watchful soldiers make the promenade feel narrower than it is."
+    special_ids:
+      "1": bund_dawn
+    special_names:
+      "1": "The Bund, Dawn"
+    connectors:
+      - at: 1
+        direction: west
+        to: nanking_road
+      - at: 25
+        direction: south
+        to: docks_01
 
-nanking_road:
-  id: nanking_road
-  title: "Nanking Road"
-  description: "The great shopping street is a ghost of itself. Metal shutters are drawn over shop fronts. A Japanese patrol marches past, their boots echoing on the cobblestones."
-  exits:
-    east: bund_dawn
-  indoors: false
+  - prefix: commercial
+    room_prefix: commercial
+    title_prefix: "Commercial Street"
+    count: 25
+    tags: [commercial, market, teahouse, printshop, office, food]
+    indoors_every: 4
+    item_cycle: [silk_scarf, newspaper, ration_card, hidden_cash]
+    description_templates:
+      - "Shop shutters rattle in the wind and painted signs peel over windows that no longer trust daylight."
+      - "The lane carries perfume, frying oil, and the stale fear of people learning to bargain without speaking plainly."
+      - "A tram line cuts through the street like a memory of speed from a calmer decade."
+      - "Neon tubes buzz fitfully above shops that trade in luxury by day and whispers by night."
+      - "Teahouses, tailors, and pawnshops lean close enough to share secrets across the street."
+    special_ids:
+      "1": nanking_road
+    special_names:
+      "1": "Nanking Road"
+    connectors:
+      - at: 1
+        direction: east
+        to: bund_dawn
+      - at: 10
+        direction: south
+        to: french_01
+      - at: 20
+        direction: south
+        to: oldcity_01
+      - at: 25
+        direction: north
+        to: hongkou_01
+
+  - prefix: old_city
+    room_prefix: oldcity
+    title_prefix: "Old City Lane"
+    count: 25
+    tags: [old_city, alley, shrine, residence, school, bridge, clinic]
+    indoors_every: 3
+    item_cycle: [temple_talisman, prayer_beads, bloodied_message, photograph]
+    description_templates:
+      - "Grey brick walls hold the night's damp, and laundry lines sag like tired flags over the alley."
+      - "Small courtyards open and close between walls inked with rain and propaganda."
+      - "The lane smells of cooking rice, old incense, and drains that never quite dry."
+      - "Wooden doors sit shoulder to shoulder, each one thin enough to hear worry through."
+      - "A shrine niche flickers from somewhere unseen, giving the alley more conscience than light."
+    connectors:
+      - at: 1
+        direction: north
+        to: commercial_20
+      - at: 12
+        direction: west
+        to: french_10
+      - at: 25
+        direction: east
+        to: hongkou_10
+
+  - prefix: hongkou
+    room_prefix: hongkou
+    title_prefix: "Hongkou Street"
+    count: 25
+    tags: [hongkou, checkpoint, refugee, station, clinic]
+    indoors_every: 4
+    item_cycle: [forged_pass, patrol_route, ration_card, newspaper]
+    description_templates:
+      - "Patrol boots scrape over tram grit while signboards in several languages stare past one another in silence."
+      - "Cheap boarding houses and military trucks share the same street under a sky the color of dirty tin."
+      - "A refugee line knots around the corner, watched by rifles too tired to lower themselves."
+      - "The district carries soot, diesel, and the brittle patience of people waiting for permission to move."
+      - "Tea steam rises from chipped bowls and disappears before it reaches the barbed wire."
+    connectors:
+      - at: 1
+        direction: south
+        to: commercial_25
+      - at: 10
+        direction: west
+        to: oldcity_25
+      - at: 20
+        direction: south
+        to: docks_15
+
+  - prefix: french
+    room_prefix: french
+    title_prefix: "French Concession Lane"
+    count: 25
+    tags: [french, balcony, church, office, rooftop, safehouse, attic]
+    indoors_every: 2
+    item_cycle: [silk_scarf, coded_ledger, hidden_cash, temple_talisman]
+    description_templates:
+      - "Plane trees drag their shadows over cracked paving and pale stucco facades with shuttered eyes."
+      - "Balconies lean overhead with ironwork elegant enough to make the war feel like an insult to architecture."
+      - "Coffee, wine, and sewer water compete in the air with no clear victor."
+      - "A church bell somewhere nearby hesitates before each note as though even sound needs permission."
+      - "Clerks, exiles, and opportunists pass under striped awnings with practiced indifference."
+    connectors:
+      - at: 1
+        direction: north
+        to: commercial_10
+      - at: 10
+        direction: east
+        to: oldcity_12
+      - at: 25
+        direction: south
+        to: docks_20
+
+  - prefix: docks
+    room_prefix: docks
+    title_prefix: "Whangpoo Dock"
+    count: 25
+    tags: [dock, river, warehouse, gambling]
+    indoors_every: 6
+    item_cycle: [dock_manifest, truncheon, hidden_cash, contraband_morphine]
+    description_templates:
+      - "Cargo hooks creak over black water while foremen count men the way they count crates."
+      - "Oil sheens spread rainbow-thin across puddles beside stacks of marked timber and unmarked fear."
+      - "Warehouse doors slam in the wind and every slam sounds like guilt correcting itself."
+      - "The wharf smells of brine, rope tar, and fish gone past salvage."
+      - "Dice rattle somewhere behind the sheds even when the sirens start."
+    connectors:
+      - at: 1
+        direction: north
+        to: bund_25
+      - at: 15
+        direction: north
+        to: hongkou_20
+      - at: 20
+        direction: north
+        to: french_25

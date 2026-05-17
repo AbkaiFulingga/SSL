@@ -1,8 +1,12 @@
 npcs:
+npcs:
   - id: liu_wei
     name: "Liu Wei, the rickshaw puller"
     description: "A wiry man in his forties, with calloused hands and deep set eyes that have seen more than most."
     faction: civilian
+    role: worker
+    personality: "cautious, loyal when trust is earned."
+    awareness: 48
     schedule:
       6: "bund_dawn"
       12: "nanking_road"
@@ -18,6 +22,335 @@ npcs:
       neutral:
         - "I don't know you, but I can take you where you need to go."
       hostile:
-        - "Don't talk to me, I don't want any trouble."
+        - "Don't talk to me, I have no room for another problem. I have endured enough hardships in this city to last two lifetimes."
 
-        
+  - id: sister_mei
+    name: "Sister Mei"
+    description: "A chapel nurse whose sleeves are always rolled past the elbow and whos patience has survived longer than sleep."
+    faction: civilian
+    role: resident
+    personality: "compassionate, exhausted, quietly stubborn"
+    awareness: 42
+    schedule:
+      6: french_04
+      12: french_08
+      18: french_12
+      22: french_04
+      dialogue:
+        greeting:
+          - "If you are bleeding, sit down. If not, make room for someone who is."
+        friendly:
+          - "Mercy is expensive these days, it's rarely at all virtue"
+        neutral:
+          - "Every day asks too much of everyone, everywhere."
+        hostile:
+           - "Get out."
+
+  - id: captain_ishikawa
+    name: "Captain Ishikawa"
+    description: "A Kempeitai officer with tight gloves and an air of arrogance tucked behind a wry smile."
+    faction: kempeitai
+    role: officer
+    personality: "cold, observant, politely cruel"
+    awareness: 82
+    faction_leader: true
+    schedule:
+      7: hongkou_03
+      12: hongkou_08
+      18: commercial_18
+      22: hongkou_03
+    dialogue:
+      greeting:
+        - "Shanghai rewards discipline. Try to learn that quickly."
+      friendly:
+        - "Reliable people are so much easier to keep alive."
+      neutral:
+        - "You will answer only what I ask, and nothing more."
+      hostile:
+        - "A liar always believes fear is bad luck."
+
+  - id: madam_xu
+    name: "Madam Xu"
+    description: "Owner of a teahouse where gossip lands softly and leaves armed."
+    faction: green_gang
+    role: broker
+    personality: "elegant, calculating, amused by weakness"
+    awareness: 68
+    schedule:
+      9: commercial_06
+      14: commercial_09
+      19: commercial_06
+      23: french_15
+    dialogue:
+      greeting:
+        - "Tea costs so little as compared to gossip."
+      friendly:
+        - "For the right friends, I remember the useful things."
+      neutral:
+        - "Business survives ideology by keeping better books."
+      hostile:
+        - "You are asking to be remembered for the wrong reason."
+
+  - id: father_benoit
+    name: "Father Benoit"
+    description: "A French priest whose cassock smells of candle smoke and rainwater."
+    faction: french_concession
+    role: clerks
+    personality: "pious, conflicted, unexpectedly brave"
+    awareness: 40
+    schedule:
+      6: french_02
+      12: french_04
+      18: french_07
+      21: french_02
+    dialogue:
+      greeting:
+        - "Peace is not absent here. It is simply outnumbered."
+      friendly:
+        - "The city keeps confessions that no church can hold."
+      neutral:
+        - "I offer shelter, not certainty."
+      hostile:
+        - "If you endanger my people, the door closes."
+
+  - id: thomas_reed
+    name: "Thomas Reed"
+    description: "A British dock clerk with salt on his cuffs and a conscience he edits daily."
+    faction: british
+    role: dockmaster
+    personality: "dry, compromised, not yet empty"
+    awareness: 57
+    schedule:
+      8: docks_03
+      12: docks_07
+      18: docks_11
+      22: bund_18
+    dialogue:
+      greeting:
+        - "Nothing enters these ledgers clean, not even the paper."
+      friendly:
+        - "If I tell you the truth, pretend you stole it."
+      neutral:
+        - "Cargo moves. Men vanish. I record only one of those."
+      hostile:
+        - "You are far too interested in the wrong crates."
+
+  - id: zhang_lan
+    name: "Zhang Lan"
+    description: "A market noodle seller whose ladle pauses whenever uniforms appear."
+    faction: civilian
+    role: vendor
+    personality: "warm, watchful, practical"
+    awareness: 46
+    schedule:
+      7: commercial_03
+      12: commercial_05
+      18: commercial_03
+      22: oldcity_02
+    dialogue:
+      greeting:
+        - "Eat while it is still hot. Everything else can wait."
+      friendly:
+        - "People talk when noodles are good enough to make them careless."
+      neutral:
+        - "I sell food, not certainty."
+      hostile:
+        - "Take your questions somewhere that can survive them."
+
+  - id: yan_fen
+    name: "Yan Fen"
+    description: "A resistance courier who walks like she is always late and therefore never suspicious."
+    faction: resistance
+    role: courier
+    personality: "quick, brave, unsentimental"
+    awareness: 74
+    schedule:
+      6: oldcity_04
+      12: commercial_14
+      18: docks_09
+      22: oldcity_18
+    dialogue:
+      greeting:
+        - "If you know me, think again."
+      friendly:
+        - "A city can still move if enough hands push in secret."
+      neutral:
+        - "I don't linger. Neither should you."
+      hostile:
+        - "Turn around and forget my face."
+
+  - id: old_wu
+    name: "Old Wu"
+    description: "A shrine keeper with soot on his sleeves and eyes that miss very little."
+    faction: civilian
+    role: resident
+    personality: "patient, shrewd, ceremonial"
+    awareness: 60
+    schedule:
+      5: oldcity_09
+      12: oldcity_11
+      18: oldcity_09
+      21: oldcity_14
+    dialogue:
+      greeting:
+        - "Offerings are cheap. Peace is not."
+      friendly:
+        - "Even the gods listen more closely these days."
+      neutral:
+        - "Light a stick if you must, but keep your hands steady."
+      hostile:
+        - "Take your bad fortune elsewhere."
+
+  - id: inspector_moreau
+    name: "Inspector Moreau"
+    description: "A concession policeman whose fatigue has sharpened into cynicism."
+    faction: french_concession
+    role: police
+    personality: "tired, skeptical, decent in flashes"
+    awareness: 63
+    schedule:
+      8: french_06
+      13: french_10
+      19: french_14
+      23: french_06
+    dialogue:
+      greeting:
+        - "Every report is a lie told in a better suit."
+      friendly:
+        - "If I did not still care a little, I would have transferred."
+      neutral:
+        - "Do not make me notice you twice."
+      hostile:
+        - "I am too tired to be patient and too honest to look away."
+
+  - id: qiao_ming
+    name: "Qiao Ming"
+    description: "A dockside gambler with nicotine fingers and a talent for hearing numbers before they are spoken."
+    faction: green_gang
+    role: smuggler
+    personality: "slick, greedy, charming under pressure"
+    awareness: 66
+    schedule:
+      10: docks_05
+      15: docks_14
+      20: docks_18
+      23: docks_05
+    dialogue:
+      greeting:
+        - "Odds change faster than loyalties here."
+      friendly:
+        - "I can move anything small enough to deny and dangerous enough to matter."
+      neutral:
+        - "A price first, a conscience later."
+      hostile:
+        - "You are one question away from expensive trouble."
+
+  - id: hanna_rosen
+    name: "Hanna Rosen"
+    description: "A refugee schoolteacher who folds sorrow into perfect posture."
+    faction: british
+    role: merchant
+    personality: "measured, kind, privately furious"
+    awareness: 44
+    schedule:
+      7: hongkou_11
+      12: hongkou_13
+      17: hongkou_16
+      21: hongkou_11
+    dialogue:
+      greeting:
+        - "Children still ask future-tense questions. That must mean something."
+      friendly:
+        - "Memory is a form of resistance when power demands erasure."
+      neutral:
+        - "I teach what can still be carried."
+      hostile:
+        - "If you bring fear into this room, leave first and apologize elsewhere."
+
+  - id: sergeant_hayashi
+    name: "Sergeant Hayashi"
+    description: "A patrol sergeant whose boots are always polished and whose suspicions are never off duty."
+    faction: kempeitai
+    role: patrol
+    personality: "disciplined, suspicious, proud"
+    awareness: 76
+    schedule:
+      6: hongkou_01
+      12: commercial_25
+      18: bund_10
+      22: hongkou_05
+    dialogue:
+      greeting:
+        - "Show me your face properly. Then your hands."
+      friendly:
+        - "A useful citizen knows when to stand still."
+      neutral:
+        - "You may pass. Slowly."
+      hostile:
+        - "You smell like excuses already."
+
+  - id: lao_peng
+    name: "Lao Peng"
+    description: "A printshop foreman with ink in the seams of his skin."
+    faction: resistance
+    role: safehouse
+    personality: "laconic, dependable, quietly defiant"
+    awareness: 58
+    schedule:
+      8: french_18
+      13: french_19
+      18: french_18
+      23: oldcity_20
+    dialogue:
+      greeting:
+        - "Paper burns fast. Ideas do not."
+      friendly:
+        - "If a page survives the night, it has already won something."
+      neutral:
+        - "Mind the ink. It remembers carelessness."
+      hostile:
+        - "Printers have enemies enough without volunteers."
+
+  - id: mrs_gu
+    name: "Mrs. Gu"
+    description: "A boarding-house keeper who inventories every tenant's grief with professional precision."
+    faction: civilian
+    role: resident
+    personality: "sharp, maternal, unsentimental"
+    awareness: 51
+    schedule:
+      7: oldcity_13
+      12: oldcity_15
+      18: oldcity_13
+      22: oldcity_13
+    dialogue:
+      greeting:
+        - "Rooms are scarce. Trouble is abundant. I rent only the first."
+      friendly:
+        - "Eat first. Schemes sound wiser on a full stomach."
+      neutral:
+        - "Pay on time and lie quietly."
+      hostile:
+        - "I have turned away men more dangerous and less obvious than you."
+
+  - id: constable_doyle
+    name: "Constable Doyle"
+    description: "A British concession constable who looks as if he has begun doubting orders in the middle of carrying them out."
+    faction: british
+    role: consul
+    personality: "formal, uneasy, morally fraying"
+    awareness: 54
+    schedule:
+      9: bund_14
+      14: french_09
+      19: commercial_08
+      22: bund_14
+    dialogue:
+      greeting:
+        - "Procedure remains the same, though the city beneath it has changed."
+      friendly:
+        - "Some rules deserve to be bent until they remember humanity."
+      neutral:
+        - "I can offer little beyond a warning."
+      hostile:
+        - "Do not force me to choose between duty and decency in public."

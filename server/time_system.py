@@ -54,3 +54,22 @@ class EventScheduler:
                         payload=event.payload,
                     ),
                 )
+
+    def to_payload(self):
+        return [
+            {
+                "trigger_minute": event.trigger_minute,
+                "event_id": event.event_id,
+                "payload": event.payload,
+            }
+            for event in self.events
+        ]
+
+    def load_from_payload(self, rows):
+        self.events = []
+        for row in rows or []:
+            self.add_event(ScheduledEvent(trigger_minute=int(row["trigger_minute"]),
+                    event_id=row["event_id"],
+                    payload=row.get("payload", {}),
+                )
+            )
